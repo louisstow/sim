@@ -1,0 +1,10 @@
+{
+	"name": "sim",
+  "description": "A sim game",
+  "author": "Louis Stowasser",
+	"version": "0.0.1",
+	"dependencies": {
+		"browserify": "1.16.1",
+		"express": "3.0.0rc3"
+	}
+}
