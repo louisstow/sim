@@ -27,8 +27,6 @@ window.require = function(module) {
 		console.error(e);
 	}
 
-	console.log(request)
-
 	return exports;
 }
 
