@@ -17,7 +17,11 @@ window.require = function(module) {
 	request.send();
 
 	try {
-		eval(request.response);
+		eval(
+			"(function() {" +
+			request.response +
+			"})();"
+		);
 	} catch(e) {
 		console.error("Error loading "+module);
 		console.error(e);
