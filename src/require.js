@@ -1,40 +1,56 @@
 /**
 * Shim the require function used in node.js
 */
+(function(parent) {
 
-(function() {
-
-if (window.require !== undefined)
+if (parent.require !== undefined)
 	throw 'RequireException: \'require\' already defined in global scope';
 
 
-window.require = function(module) {
-	var url = window.require.resolve(module);
+parent.require = function(module) {
+	var url = parent.require.resolve(module);
+
+	//check the cache first
+	if (parent.require.cache[url])
+		return parent.require.cache[url];
 	
+	//create the request object
 	var request = new XMLHttpRequest();
 	
+	//make the require request synchronous (the third parameter)
 	request.open('GET', url, false);
 	request.send();
 
 	try {
+		//evaluate the code in a closure
 		eval(
 			"(function() {" +
 			request.response +
 			"})();"
 		);
 	} catch(e) {
-		console.error("Error loading "+module);
+		//problem loading module
+		console.error("Error loading " + module);
 		console.error(e);
 	}
 
-	return exports;
-}
+	//save the exports and remove it from global
+	var exportThis = exports;
+	delete window.exports;
 
-window.require.resolve = function(module) {
+	//save the export in the cache
+	parent.require.cache[url] = exportThis;
+
+	//return the exports variable
+	return exportThis;
+};
+
+//transform require url into a real url
+parent.require.resolve = function(module) {
 	var r = module.match(/^(\.{0,2}\/)?([^\.]*)(\..*)?$/);
 	return (r[1]?r[1]:'./')+r[2]+(r[3]?r[3]:(r[2].match(/\/$/)?'index.js':'.js'));
-}
+};
 
-// INFO initializing module cache
-window.require.cache = new Object();
-})();
+//create module cache
+parent.require.cache = {};
+})(window);

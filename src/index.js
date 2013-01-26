@@ -19,11 +19,11 @@ function init (argument) {
 	//renderer for buildings and resources
 	var resourcesRender = new MapRenderer(resources);
 	resourcesRender.render(ctx);
-	
+
 	//setup a tick
 	var ticker = setInterval(function() {
 		resources.tick();
 		buildings.tick();
 		
-	}, 1000 / 60 | 0)
+	}, 1000 / 60 | 0);
 }
